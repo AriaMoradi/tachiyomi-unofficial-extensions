@@ -76,10 +76,6 @@ dependencies {
 
     // multi-source library
     implementation project(':lib-themesources')
-
-
-
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")
 }
 
 preBuild.dependsOn(lintKotlin)
