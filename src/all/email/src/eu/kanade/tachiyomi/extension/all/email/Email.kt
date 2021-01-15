@@ -55,7 +55,7 @@ class Email : ConfigurableSource, HttpSource() {
     private fun getPrefPass(): String = preferences.getString(SETTING_PASS, DEFAULT_PASS)!!
     private fun getPrefHost(): String = preferences.getString(SETTING_HOST, DEFAULT_HOST)!!
     private fun getPrefPort(): Int = try { preferences.getString(SETTING_PORT, DEFAULT_PORT.toString())!!.toInt() } catch (e: java.lang.Exception) { 993 }
-    private fun getPrefSSL(): Boolean = preferences.getBoolean(SETTING_SSL, DEFAULT_SSL)!!
+    private fun getPrefSSL(): Boolean = preferences.getBoolean(SETTING_SSL, DEFAULT_SSL)
 
     private val preferences: SharedPreferences by lazy {
         Injekt.get<Application>().getSharedPreferences("source_$id", 0x0000)

@@ -74,7 +74,6 @@ class KillSixBillionDemonsWithFlavourText : KillSixBillionDemons() {
     private fun flavourTextAsImageURL(response: Response): String {
         val document = response.asJsoup()
         var flavourTextParagraphs = document.select(".entry").first().select("p").map { el -> el.text() }
-        var pageTitle = document.select("div.post-content > div.post-info > h2").text()
 
         if (flavourTextParagraphs.isEmpty())
             flavourTextParagraphs = listOf("No flavour text for the previous page.")
