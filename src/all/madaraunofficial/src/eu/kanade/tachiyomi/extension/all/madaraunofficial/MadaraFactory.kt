@@ -9,6 +9,7 @@ class MadaraFactory : SourceFactory {
         MangaWOW(),
         AhStudios(),
         KnightNoScanlation(),
+        Skymanga(),
     )
 }
 
@@ -22,3 +23,6 @@ class MangaGecesi : Madara("Manga Gecesi", "https://mangagecesi.com", "tr") {
 class MangaWOW : Madara("MangaWOW", "https://mangawow.com", "tr")
 
 class KnightNoScanlation : Madara("Knight no Scanlation", "https://knightnoscanlation.com", "es")
+
+class Skymanga : Madara("Skymanga", "https://skymanga.co", "en")
+
