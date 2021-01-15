@@ -13,13 +13,13 @@ if [ "${#APKS[@]}" -le "1" ]; then
 fi;
 
 # Take base64 encoded key input and put it into a file
-#STORE_PATH=$PWD/signingkey.jks
-#rm -f $STORE_PATH && touch $STORE_PATH
-#echo $1 | base64 -d > $STORE_PATH
+STORE_PATH=$PWD/signingkey.jks
+rm -f $STORE_PATH && touch $STORE_PATH
+echo $1 | base64 -d > $STORE_PATH
 
-#STORE_ALIAS=$2
-#export KEY_STORE_PASSWORD=$3
-#export KEY_PASSWORD=$4
+STORE_ALIAS=$2
+export KEY_STORE_PASSWORD=$3
+export KEY_PASSWORD=$4
 
 DEST=$PWD/apk
 rm -rf $DEST && mkdir -p $DEST
@@ -30,17 +30,12 @@ for APK in ${APKS[@]}; do
     APKNAME="${BASENAME%%+(-release*)}.apk"
     APKDEST="$DEST/$APKNAME"
 
-#    ${TOOLS}/zipalign -c -v -p 4 $APK
+    ${TOOLS}/zipalign -c -v -p 4 $APK
 
     cp $APK $APKDEST
-    #${TOOLS}/apksigner sign --ks $STORE_PATH --ks-key-alias $STORE_ALIAS --ks-pass env:KEY_STORE_PASSWORD --key-pass env:KEY_PASSWORD $APKDEST
-    #${TOOLS}/apksigner sign --ks $STORE_PATH --ks-key-alias $STORE_ALIAS --ks-pass env:KEY_STORE_PASSWORD --key-pass env:KEY_PASSWORD $APKDEST
-
-#    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass armorarmor -keystore my-release-key2.keystore $APKDEST alias_name
-    jarsigner -verbose -keystore debug.keystore -storepass android -keypass android $APKDEST androiddebugkey
-
+    ${TOOLS}/apksigner sign --ks $STORE_PATH --ks-key-alias $STORE_ALIAS --ks-pass env:KEY_STORE_PASSWORD --key-pass env:KEY_PASSWORD $APKDEST
 done
 
-#rm $STORE_PATH
-#unset KEY_STORE_PASSWORD
-#unset KEY_PASSWORD
+rm $STORE_PATH
+unset KEY_STORE_PASSWORD
+unset KEY_PASSWORD

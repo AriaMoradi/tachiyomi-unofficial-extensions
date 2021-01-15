@@ -47,58 +47,41 @@ jobs:
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - name: Build theme sources library
-        uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: master
-          wrapper-directory: master
-          arguments: :lib-themesources:generateDebugSources :lib-themesources:generateDebugAndroidTestSources :lib-themesources:createMockableJar :lib-themesources:compileDebugAndroidTestSources :lib-themesources:compileDebugUnitTestSources :lib-themesources:compileDebugSources
-          wrapper-cache-enabled: true
-          dependencies-cache-enabled: true
-          configuration-cache-enabled: true
-
-      - name: Run theme sources generator
-        uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: master
-          wrapper-directory: master
-          arguments: :lib-themesources:runAllGenerators
-          wrapper-cache-enabled: true
-          dependencies-cache-enabled: true
-          configuration-cache-enabled: true
-
       - name: Build extensions
         uses: eskatos/gradle-command-action@v1
         with:
           build-root-directory: master
           wrapper-directory: master
           arguments: assembleRelease
-#          arguments: assembleDebug # assbmleRelease needs signing!
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
 
       - name: Sign APKs
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository == 'tachiyomiorg/tachiyomi-extensions'
         run: |
           cd master
-          ./.github/scripts/sign-apks.sh
+          ./.github/scripts/sign-apks.sh \
+            ${{ secrets.SIGNING_KEY }} \
+            ${{ secrets.ALIAS }} \
+            ${{ secrets.KEY_STORE_PASSWORD }} \
+            ${{ secrets.KEY_PASSWORD }}
 
       - name: Create repo artifacts
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository == 'tachiyomiorg/tachiyomi-extensions'
         run: |
           cd master
           ./.github/scripts/create-repo.sh
 
       - name: Checkout repo branch
-        if: github.event_name == 'push' 
+        if: github.event_name == 'push' && github.repository == 'tachiyomiorg/tachiyomi-extensions'
         uses: actions/checkout@v2
         with:
           ref: repo
           path: repo
 
       - name: Deploy repo
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.repository == 'tachiyomiorg/tachiyomi-extensions'
         run: |
           cd repo
           ../master/.github/scripts/commit-repo.sh
