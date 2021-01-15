@@ -12,7 +12,6 @@ import android.support.v7.preference.EditTextPreference
 import android.support.v7.preference.PreferenceScreen
 import android.text.InputType
 import android.widget.Toast
-import androidx.preference.CheckBoxPreference as XCheckBoxPreference
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
@@ -20,12 +19,6 @@ import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.HttpSource
-import java.io.ByteArrayOutputStream
-import java.util.Properties
-import javax.mail.Folder
-import javax.mail.Multipart
-import javax.mail.Part
-import javax.mail.Session
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -36,6 +29,13 @@ import org.jsoup.Jsoup
 import rx.Observable
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.io.ByteArrayOutputStream
+import java.util.Properties
+import javax.mail.Folder
+import javax.mail.Multipart
+import javax.mail.Part
+import javax.mail.Session
+import androidx.preference.CheckBoxPreference as XCheckBoxPreference
 
 class Email : ConfigurableSource, HttpSource() {
 
@@ -108,9 +108,11 @@ class Email : ConfigurableSource, HttpSource() {
         // email to image code
         val number = url.substringAfterLast("/").toInt()
 
-        val session = Session.getDefaultInstance(Properties().apply {
-            put("mail.imap.ssl.enable", if (ssl) { "true" } else { "false" })
-        })
+        val session = Session.getDefaultInstance(
+            Properties().apply {
+                put("mail.imap.ssl.enable", if (ssl) { "true" } else { "false" })
+            }
+        )
         val store = session.getStore("imap")
         store.connect(host, port, mail, pass)
         val inbox = store.getFolder("INBOX")
@@ -181,20 +183,24 @@ class Email : ConfigurableSource, HttpSource() {
         .map { it.mangas.first().apply { initialized = true } }
 
     override fun fetchChapterList(manga: SManga): Observable<List<SChapter>> {
-        val session = Session.getDefaultInstance(Properties().apply {
-            put("mail.imap.ssl.enable", if (ssl) { "true" } else { "false" })
-        })
+        val session = Session.getDefaultInstance(
+            Properties().apply {
+                put("mail.imap.ssl.enable", if (ssl) { "true" } else { "false" })
+            }
+        )
         val store = session.getStore("imap")
         store.connect(host, port, mail, pass)
         val inbox = store.getFolder("INBOX")
         inbox.open(Folder.READ_ONLY)
-        val chapters = inbox.getMessages(inbox.messageCount - 50, inbox.messageCount).map { SChapter.create().apply {
-            chapter_number = it.messageNumber.toFloat()
-            name = it.subject
-            scanlator = it.from.joinToString(", ")
-            url = "$baseUrl/${it.messageNumber}"
-            date_upload = it.receivedDate.time
-        } }.reversed()
+        val chapters = inbox.getMessages(inbox.messageCount - 50, inbox.messageCount).map {
+            SChapter.create().apply {
+                chapter_number = it.messageNumber.toFloat()
+                name = it.subject
+                scanlator = it.from.joinToString(", ")
+                url = "$baseUrl/${it.messageNumber}"
+                date_upload = it.receivedDate.time
+            }
+        }.reversed()
         return Observable.just(chapters)
     }
 
@@ -258,15 +264,17 @@ class Email : ConfigurableSource, HttpSource() {
     override fun setupPreferenceScreen(screen: androidx.preference.PreferenceScreen) {
         screen.addPreference(screen.editTextPreference(SETTING_HOST, DEFAULT_HOST, host))
         screen.addPreference(screen.editTextPreference(SETTING_PORT, DEFAULT_PORT.toString(), port.toString(), isNumber = true))
-        screen.addPreference(XCheckBoxPreference(screen.context).apply {
-            key = SETTING_SSL
-            title = SETTING_SSL
-            setDefaultValue(DEFAULT_SSL)
+        screen.addPreference(
+            XCheckBoxPreference(screen.context).apply {
+                key = SETTING_SSL
+                title = SETTING_SSL
+                setDefaultValue(DEFAULT_SSL)
 
-            setOnPreferenceChangeListener { _, newValue ->
-                preferences.edit().putBoolean(key, newValue as Boolean).commit()
+                setOnPreferenceChangeListener { _, newValue ->
+                    preferences.edit().putBoolean(key, newValue as Boolean).commit()
+                }
             }
-        })
+        )
 
         screen.addPreference(screen.editTextPreference(SETTING_MAIL, DEFAULT_MAIL, mail))
         screen.addPreference(screen.editTextPreference(SETTING_PASS, DEFAULT_PASS, pass, isPassword = true))
@@ -275,15 +283,17 @@ class Email : ConfigurableSource, HttpSource() {
     override fun setupPreferenceScreen(screen: PreferenceScreen) {
         screen.addPreference(screen.supportEditTextPreference(SETTING_HOST, DEFAULT_HOST, host))
         screen.addPreference(screen.supportEditTextPreference(SETTING_PORT, DEFAULT_PORT.toString(), port.toString()))
-        screen.addPreference(CheckBoxPreference(screen.context).apply {
-            key = SETTING_SSL
-            title = SETTING_SSL
-            setDefaultValue(DEFAULT_SSL)
+        screen.addPreference(
+            CheckBoxPreference(screen.context).apply {
+                key = SETTING_SSL
+                title = SETTING_SSL
+                setDefaultValue(DEFAULT_SSL)
 
-            setOnPreferenceChangeListener { _, newValue ->
-                preferences.edit().putBoolean(key, newValue as Boolean).commit()
+                setOnPreferenceChangeListener { _, newValue ->
+                    preferences.edit().putBoolean(key, newValue as Boolean).commit()
+                }
             }
-        })
+        )
 
         screen.addPreference(screen.supportEditTextPreference(SETTING_MAIL, DEFAULT_MAIL, mail))
         screen.addPreference(screen.supportEditTextPreference(SETTING_PASS, DEFAULT_PASS, pass))

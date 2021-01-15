@@ -12,14 +12,13 @@ import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.util.asJsoup
-import java.io.ByteArrayOutputStream
-import java.security.MessageDigest
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.apache.commons.text.WordUtils
 import org.jsoup.nodes.Element
 import rx.Observable
+import java.io.ByteArrayOutputStream
 
 /**
  *  @author Aria Moradi <aria.moradi007@gmail.com>
@@ -105,7 +104,7 @@ class KillSixBillionDemonsWithFlavourText : KillSixBillionDemons() {
 
         val x = (imageWidth / 2).toFloat()
         var y = imageVerticalMargin.toFloat()
-        canvas.save(Canvas.ALL_SAVE_FLAG)
+        canvas.save()
         canvas.restore()
         for (line in linesToDraw) {
             canvas.drawText(line, x, y, paint)
