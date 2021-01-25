@@ -18,12 +18,12 @@
     "nsfw": 1
   },
   {
-    "name": "Tachiyomi: WP MangaStream (unofficial)",
+    "name": "Tachiyomi: WP MangaStream Unofficial",
     "pkg": "eu.kanade.tachiyomi.extension.all.wpmangastreamunofficial",
-    "apk": "tachiyomi-all.wpmangastreamunofficial-v1.2.1.apk",
+    "apk": "tachiyomi-all.wpmangastreamunofficial-v1.2.2.apk",
     "lang": "all",
-    "code": 1,
-    "version": "1.2.1",
+    "code": 2,
+    "version": "1.2.2",
     "nsfw": 0
   },
   {
