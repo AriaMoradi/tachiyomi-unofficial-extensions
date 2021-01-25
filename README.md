@@ -4,7 +4,7 @@ This repository houses extensions that didn't make it into [Tachiyomi Extensions
 
 # Support
 
-Both [TachiyomiSy](https://github.com/jobobby04/TachiyomiSY) and [TachiyomiAZ](https://github.com/az4521/TachiyomiAZ) support additional repos.
+Both [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY) and [TachiyomiAZ](https://github.com/az4521/TachiyomiAZ) support additional repos.
 
 # Requests
 
