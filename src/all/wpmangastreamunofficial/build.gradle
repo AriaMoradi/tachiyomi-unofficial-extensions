@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 ext {
-    extName = 'WP MangaStream (unofficial)'
+    extName = 'WP MangaStream Unofficial'
     pkgNameSuffix = 'all.wpmangastreamunofficial'
     extClass = '.WPMangaStreamFactory'
-    extVersionCode = 1
+    extVersionCode = 2
     libVersion = '1.2'
 }
 
