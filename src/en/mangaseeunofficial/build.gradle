@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 ext {
-    extName = 'Mangasee'
-    pkgNameSuffix = 'en.mangasee'
+    extName = 'Mangasee Unofficial'
+    pkgNameSuffix = 'en.mangaseeunofficial'
     extClass = '.Mangasee'
-    extVersionCode = 19
+    extVersionCode = 20
     libVersion = '1.2'
 }
 

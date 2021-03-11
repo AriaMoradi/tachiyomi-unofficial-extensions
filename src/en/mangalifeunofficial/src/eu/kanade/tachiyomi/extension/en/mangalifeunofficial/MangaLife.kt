@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.en.mangasee
+package eu.kanade.tachiyomi.extension.en.mangalifeunofficial
 
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
@@ -28,23 +28,20 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 /**
- * Exact same code as Manga Life except for better chapter names thanks to Regex
- * Probably should make this a multi-source extension, but decided that that's a problem for a different day
+ * Source responds to requests with their full database as a JsonArray, then sorts/filters it client-side
+ * We'll take the database on first requests, then do what we want with it
  */
+class MangaLife : HttpSource() {
 
-class Mangasee : HttpSource() {
+    override val name = "MangaLife"
 
-    override val id: Long = 9
-
-    override val name = "Mangasee"
-
-    override val baseUrl = "https://mangasee123.com"
+    override val baseUrl = "https://manga4life.com"
 
     override val lang = "en"
 
     override val supportsLatest = true
 
-    private val rateLimitInterceptor = RateLimitInterceptor(1, 5)
+    private val rateLimitInterceptor = RateLimitInterceptor(1, 1)
 
     override val client: OkHttpClient = network.cloudflareClient.newBuilder()
         .addNetworkInterceptor(rateLimitInterceptor)
@@ -200,7 +197,7 @@ class Mangasee : HttpSource() {
                 title = info.select("h1").text()
                 author = info.select("li.list-group-item:has(span:contains(Author)) a").first()?.text()
                 genre = info.select("li.list-group-item:has(span:contains(Genre)) a").joinToString { it.text() }
-                status = info.select("li.list-group-item:has(span:contains(Status)) a:contains(scan)").text().toStatus()
+                status = info.select("li.list-group-item:has(span:contains(Status)) a:contains(publish)").text().toStatus()
                 description = info.select("div.Content").text()
                 thumbnail_url = info.select("img").attr("abs:src")
             }
@@ -221,8 +218,7 @@ class Mangasee : HttpSource() {
         var index = ""
         val t = e.substring(0, 1).toInt()
         if (1 != t) { index = "-index-$t" }
-        val dgt = if (e.toInt() < 100100) { 4 } else if (e.toInt() < 101000) { 3 } else if (e.toInt() < 110000) { 2 } else { 1 }
-        val n = e.substring(dgt, e.length - 1)
+        val n = e.substring(1, e.length - 1)
         var suffix = ""
         val path = e.substring(e.length - 1).toInt()
         if (0 != path) { suffix = ".$path" }
@@ -308,7 +304,8 @@ class Mangasee : HttpSource() {
         GenreList(getGenreList())
     )
 
-    // copied over from Manga Life
+    // [...document.querySelectorAll("label.triStateCheckBox input")].map(el => `Filter("${el.getAttribute('name')}", "${el.nextSibling.textContent.trim()}")`).join(',\n')
+    // https://manga4life.com/advanced-search/
     private fun getGenreList() = listOf(
         Genre("Action"),
         Genre("Adult"),

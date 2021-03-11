@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 ext {
-    extName = 'MangaLife'
-    pkgNameSuffix = 'en.mangalife'
+    extName = 'MangaLife Unofficial'
+    pkgNameSuffix = 'en.mangalifeunofficial'
     extClass = '.MangaLife'
-    extVersionCode = 15
+    extVersionCode = 16
     libVersion = '1.2'
 }
 
