@@ -1,3 +1,7 @@
+# The project is no longer maintained 
+
+<hr>
+
 ![CI](https://github.com/AriaMoradi/tachiyomi-unofficial-extensions/workflows/CI/badge.svg?event=push)
 
 This repository houses extensions that didn't make it into [Tachiyomi Extensions](https://github.com/tachiyomiorg/tachiyomi-extensions) or where removed from it.
