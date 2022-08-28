@@ -1,14 +1,7 @@
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
-    compileSdkVersion Config.compileSdk
-    buildToolsVersion Config.buildTools
-
-    buildTypes {
-        release {
-            minifyEnabled false
-        }
-    }
+    compileSdkVersion AndroidConfig.compileSdk
 
     sourceSets {
         main {
@@ -25,21 +18,57 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion Config.minSdk
-        targetSdkVersion Config.targetSdk
+        minSdkVersion AndroidConfig.minSdk
+        targetSdkVersion AndroidConfig.targetSdk
         applicationIdSuffix pkgNameSuffix
         versionCode extVersionCode
-        versionName "$libVersion.$extVersionCode"
+        versionName project.ext.properties.getOrDefault("libVersion", "1.3") + ".$extVersionCode"
         setProperty("archivesBaseName", "tachiyomi-$pkgNameSuffix-v$versionName")
+        def readmes = project.projectDir.listFiles({ File file ->
+            file.name == "README.md" || file.name == "CHANGELOG.md"
+        } as FileFilter)
+        def hasReadme = readmes != null && readmes.any { File file ->
+            file.name.startsWith("README")
+        }
+        def hasChangelog = readmes != null && readmes.any { File file ->
+            file.name.startsWith("CHANGELOG")
+        }
         manifestPlaceholders = [
                 appName : "Tachiyomi: $extName",
                 extClass: extClass,
-                nsfw: project.ext.properties.getOrDefault("containsNsfw", false) ? 1 : 0,
+                extFactory: project.ext.properties.getOrDefault("extFactory", ""),
+                nsfw: project.ext.properties.getOrDefault("isNsfw", false) ? 1 : 0,
+                hasReadme: hasReadme ? 1 : 0,
+                hasChangelog: hasChangelog ? 1 : 0,
         ]
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file("signingkey.jks")
+            storePassword System.getenv("KEY_STORE_PASSWORD")
+            keyAlias System.getenv("ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
     }
 
     dependenciesInfo {
         includeInApk = false
+    }
+
+    buildFeatures {
+        // Disable unused AGP features
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
     }
 
     compileOptions {
@@ -49,6 +78,7 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs += "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"
     }
 }
 
@@ -57,22 +87,8 @@ repositories {
 }
 
 dependencies {
-    implementation project(":annotations")
-    implementation project(":core")
-
-    // Lib 1.2, but using specific commit so we don't need to bump up the version
-    compileOnly "com.github.tachiyomiorg:extensions-lib:a596412"
-
-    // These are provided by the app itself
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
-    compileOnly 'com.github.inorichi.injekt:injekt-core:65b0440'
-    compileOnly 'com.squareup.okhttp3:okhttp:3.10.0'
-    compileOnly 'io.reactivex:rxjava:1.3.6'
-    compileOnly 'org.jsoup:jsoup:1.10.2'
-    compileOnly 'com.google.code.gson:gson:2.8.2'
-    compileOnly 'com.github.salomonbrys.kotson:kotson:2.5.0'
-    compileOnly project(':duktape-stub')
+    implementation(project(":core"))
+    compileOnly(libs.bundles.common)
 }
 
 preBuild.dependsOn(lintKotlin)

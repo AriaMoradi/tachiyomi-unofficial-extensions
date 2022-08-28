@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Config.compileSdk)
-    buildToolsVersion(Config.buildTools)
+    compileSdk = AndroidConfig.compileSdk
 
     defaultConfig {
-        minSdkVersion(Config.minSdk)
-        targetSdkVersion(Config.targetSdk)
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
     }
 }
 
@@ -18,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(Deps.kotlin.stdlib)
-    compileOnly(Deps.okhttp)
-    compileOnly(Deps.jsoup)
+    compileOnly(libs.kotlin.stdlib)
+    compileOnly(libs.okhttp)
+    compileOnly(libs.jsoup)
 }
