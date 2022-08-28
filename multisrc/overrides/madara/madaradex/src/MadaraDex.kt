@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.extension.en.madaradex
 
 import eu.kanade.tachiyomi.multisrc.madara.Madara
+import okhttp3.Headers
 import java.text.SimpleDateFormat
 import java.util.Locale
 
